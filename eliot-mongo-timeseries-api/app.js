@@ -4,7 +4,7 @@ const timeseries = require('./routes/timeseries');
 const mongoose = require('mongoose');
 var bodyParser = require("body-parser");
 
-var queryString = 'mongodb://' + '35.241.208.46' + ':' + config.mongodb.port + '/' + config.mongodb.database;
+var queryString = 'mongodb://' + 'localhost' + ':' + config.mongodb.port + '/' + config.mongodb.database;
 
 try{
     mongoose.connect(queryString, { useNewUrlParser: true }); 
