@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const timeseries = require('./routes/timeseries');
 const mongoose = require('mongoose');
+const cors = require('cors');
 var bodyParser = require("body-parser");
 
 var queryString = 'mongodb://' + 'localhost' + ':' + config.mongodb.port + '/' + config.mongodb.database;
@@ -18,5 +19,6 @@ finally{
 
 app.use(bodyParser.json());
 app.use('/timeseries', timeseries);
+app.use(cors);
 
 module.exports = app;
