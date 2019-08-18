@@ -13,9 +13,9 @@ git pull https://github.com/MigalBothma/eliot-services.git
 
 echo "NPM Install Service Dependencies"
 cd /usr/src/eliot-services/eliot-mqtt-mongodb/
-npm install
+sudo npm install
 cd /usr/src/eliot-services/eliot-mongo-timeseries-api/
-npm install
+sudo npm install
 
 echo "Start ELIoT Services"
 forever start /usr/src/eliot-services/eliot-mqtt-mongodb/server.js
