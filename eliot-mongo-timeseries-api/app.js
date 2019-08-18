@@ -19,6 +19,6 @@ finally{
 
 app.use(bodyParser.json());
 app.use('/timeseries', timeseries);
-app.use(cors);
+app.use(cors());
 
 module.exports = app;
