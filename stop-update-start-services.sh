@@ -12,12 +12,10 @@ git stash
 git pull https://github.com/MigalBothma/eliot-services.git
 
 echo "NPM Install Service Dependencies"
-cd eliot-mongo-timeseries-api/
+cd /usr/src/eliot-services/eliot-mqtt-mongodb/
 npm install
-cd ..
-cd eliot-mqtt-mongodb/
+cd /usr/src/eliot-services/eliot-mongo-timeseries-api/
 npm install
-cd ..
 
 echo "Start ELIoT Services"
 forever start /usr/src/eliot-services/eliot-mqtt-mongodb/server.js
