@@ -7,15 +7,16 @@ cd /usr/src/
 echo "Forever stop all services"
 forever stopall
 
-echo "Cloning ELIoT Services from github"
-git clone https://github.com/MigalBothma/eliot-services.git
+echo "Pulling ELIoT Services from github"
+git stash
+git pull https://github.com/MigalBothma/eliot-services.git
 
 echo "NPM Install Service Dependencies"
-cd eliot-mongo-timeseries-api
-npm Install
+cd eliot-mongo-timeseries-api/
+npm install
 cd ..
-cd eliot-mqtt-mongodb
-npm Install
+cd eliot-mqtt-mongodb/
+npm install
 cd ..
 
 echo "Start ELIoT Services"
