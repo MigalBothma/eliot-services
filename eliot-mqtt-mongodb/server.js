@@ -19,7 +19,7 @@ function setupCollection(err, database){
 	client.on('message', insertEvent);
 }
 
-function insertEvent(){
+function insertEvent(message, topic){
 	console.log("Time : " + moment().toISOString() + ", Topic : " + topic);
 	var messageObject = {};
 	var _topicdata = topic.split("/");
