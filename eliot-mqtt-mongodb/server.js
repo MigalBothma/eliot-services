@@ -22,36 +22,39 @@ function setupCollection(err, database) {
 function insertEvent(topic, message) {
 	if (topic && message) {
 		console.log("Time : " + moment().toISOString() + ", Topic : " + topic);
-		var messageObject = {};
+		var messageObject;
 		var _topicdata = topic.split("/");
 
-		if (parseInt(_topicdata.length) == 3) {
-			var _company = _topicdata[0];
-			var _location = _topicdata[1];
-			var _area = _topicdata[2];
+		if (_topicdata) {
+			messageObject = {};
+			if (parseInt(_topicdata.length) == 3) {
+				var _company = _topicdata[0];
+				var _location = _topicdata[1];
+				var _area = _topicdata[2];
 
-			messageObject = {
-				timestamp: moment().toISOString(),
-				company: _company,
-				location: _location,
-				area: _area,
-				data: JSON.parse(message)
-			};
-		}
-		else {
-			messageObject = {
-				timestamp: moment().toISOString(),
-				topic: topic,
-				message: message.toString(),
-				data: JSON.parse(message)
-			};
-		}
-
-		collection.insert(messageObject, function (error, result) {
-			if (error != null) {
-				console.log("ERROR: " + error);
+				messageObject = {
+					timestamp: moment().toISOString(),
+					company: _company,
+					location: _location,
+					area: _area,
+					data: JSON.parse(message)
+				};
 			}
-			console.log("MongoDB result : " + result);
-		});
+			if (parseInt(_topicdata.length) != 3){
+				messageObject = {
+					timestamp: moment().toISOString(),
+					topic: topic,
+					message: message.toString(),
+					data: JSON.parse(message)
+				};
+			}
+
+			collection.insert(messageObject, function (error, result) {
+				if (error != null) {
+					console.log("ERROR: " + error);
+				}
+				console.log("MongoDB result : " + result);
+			});
+		}
 	}
 }
