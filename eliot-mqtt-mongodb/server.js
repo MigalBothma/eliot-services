@@ -25,7 +25,7 @@ function insertEvent(topic, message) {
 		var messageObject = {};
 		var _topicdata = topic.split("/");
 
-		if (ParseInt(_topicdata.length) == 3) {
+		if (parseInt(_topicdata.length) == 3) {
 			var _company = _topicdata[0];
 			var _location = _topicdata[1];
 			var _area = _topicdata[2];
