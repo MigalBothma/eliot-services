@@ -3,7 +3,7 @@ var config = {};
 config.debug = process.env.DEBUG || false;
 
 config.mongodb = {};
-config.mongodb.hostname   = process.env.MONGODB_HOSTNAME   || 'localhost';
+config.mongodb.hostname   = process.env.MONGODB_HOSTNAME   || '35.241.208.46' ;
 config.mongodb.port       = process.env.MONGODB_PORT       || 27017;
 config.mongodb.database   = process.env.MONGODB_DATABASE   || 'mqtt';
 config.mongodb.collection = process.env.MONGODB_COLLECTION || 'events';

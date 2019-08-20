@@ -7,8 +7,9 @@ router.get('/', async (req, res, next) => {
     const result = {
         "Functions" : {
             "GET /timeseries/" : "Returns this functions list",
-            "GET /timeseries/all" : "Returns all timeseries entries (possbily limited)",
+            "GET /timeseries/all" : "Returns all timeseries entries (limited to 1440 events = 1 day)",
             "GET /timeseries/company/:companyName" : "Returns timeseries data for a specific company",
+            "GET /timeseries/company/:company/area/:area" : "Returns all timeseries entries",
             "POST /timeseries/event" : "Post a timeseries entry to database/events (accepts JSON body)"
         }
     };
@@ -20,13 +21,63 @@ router.get('/all', async (req, res, next) => {
     res.send(result);
 });
 
-router.get('/company/:company&?', async (req, res, next) => {
+router.get('/company/:company', async (req, res, next) => {
     const _company = req.params.company;
     const result = await Event.find({
         company: _company
     });
     res.send(result);
 });
+
+router.get('/company/:company/area/:area', async (req, res, next) => {
+    const _company = req.params.company;
+    const _area = req.params.area;
+    const result = await Event.find({
+        company: _company,
+        area : _area
+    });
+    res.send(result);
+});
+
+router.get('/company/:company/timeseries', async (req, res, next) => {
+    const _company = req.params.company;
+    const dbresult = await Event.find({
+        company: _company
+    });
+
+    var result = {};
+
+    var locations = [];
+    var areas = [];
+
+    var uniqueLocations;
+    var uniqueAreas;
+
+    //limit to 1440 results @ 1 min = 1 day
+    if(dbresult.length > 0)
+    {
+        if(dbresult.length > 1440){
+            dbresult = dbresult.slice(0, 1399);
+        }
+    }
+
+    dbresult.forEach(event => {
+        locations.push(event["location"]);
+        areas.push(event["area"]);
+    });
+
+    //Get Distinct locations & areas
+    uniqueLocations = Array.from(new Set(locations));
+    uniqueAreas = Array.from(new Set(areas));
+
+    uniqueLocations.forEach( location => {
+        
+    });
+
+    console.log(uniqueLocations);
+
+    res.send(result);
+})
 
 router.post('/event', async (req, res, next) => {
     const event = new Event({

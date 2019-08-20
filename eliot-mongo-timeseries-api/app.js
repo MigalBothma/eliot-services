@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 var bodyParser = require("body-parser");
 
-var queryString = 'mongodb://' + 'localhost' + ':' + config.mongodb.port + '/' + config.mongodb.database;
+var queryString = 'mongodb://' + config.mongodb.hostname + ':' + config.mongodb.port + '/' + config.mongodb.database;
 
 try{
     mongoose.connect(queryString, { useNewUrlParser: true }); 
