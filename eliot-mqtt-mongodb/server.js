@@ -44,6 +44,6 @@ function insertEvent(topic, message) {
 			}
 			console.log("MongoDB result : " + result);
 		});
-		}
 	}
 }
+
