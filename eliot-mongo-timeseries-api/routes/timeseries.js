@@ -9,7 +9,8 @@ router.get('/', async (req, res, next) => {
             "GET /timeseries/" : "Returns this functions list",
             "GET /timeseries/all" : "Returns all timeseries entries (limited to 1440 events = 1 day)",
             "GET /timeseries/company/:companyName" : "Returns timeseries data for a specific company",
-            "GET /timeseries/company/:company/area/:area" : "Returns all timeseries entries",
+            "GET /timeseries/company/:company/location/:location" : "Returns all timeseries entries for Company + Location",
+            "GET /timeseries/company/:company/location/:location/area/:area" : "Returns all timeseries entries for Company + Location + Area",
             "POST /timeseries/event" : "Post a timeseries entry to database/events (accepts JSON body)"
         }
     };
@@ -29,11 +30,23 @@ router.get('/company/:company', async (req, res, next) => {
     res.send(result);
 });
 
-router.get('/company/:company/area/:area', async (req, res, next) => {
+router.get('/company/:company/location/:location', async (req, res, next) => {
     const _company = req.params.company;
+    const _location = req.params.location;
+    const result = await Event.find({
+        company: _company,
+        location : _location
+    });
+    res.send(result);
+});
+
+router.get('/company/:company/location/:location/area/:area', async (req, res, next) => {
+    const _company = req.params.company;
+    const _location = req.params.location;
     const _area = req.params.area;
     const result = await Event.find({
         company: _company,
+        location : _location,
         area : _area
     });
     res.send(result);
