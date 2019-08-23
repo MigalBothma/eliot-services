@@ -56,9 +56,12 @@ router.get('/company/:company/location/:location/area/:area', async (req, res, n
 
 router.get('/company/:company/timeseries', async (req, res, next) => {
     const _company = req.params.company;
-    let dbresult = await Event.find({
-        company: _company
-    }).limit(1440).sort( { timestamp : 1 }); //limit to 1440 ;
+    let dbresult = await Event.aggregate([
+        {$match : { company: _company }},
+        {$sort:{timestamp:-1}},
+        {$limit:1440},
+        {$sort:{timestamp:1}}
+    ])
 
     let result;
     let locations = [];
@@ -79,6 +82,8 @@ router.get('/company/:company/timeseries', async (req, res, next) => {
             areas.push(event["area"]);
             event["data"]["timestamp"] = event["timestamp"];
         });
+
+        dbresult.sort( (x, y) => { return x.timestamp - y.timestamp; });
 
         //Get Distinct locations & areas
         uniqueLocations = Array.from(new Set(locations));
@@ -110,7 +115,7 @@ router.get('/company/:company/timeseries', async (req, res, next) => {
             uniqueAreaData = {};
         });
 
-        result = JSON.stringify(uniqueLocationData);
+        result = uniqueLocationData;
 
         res.send(result);
     }
