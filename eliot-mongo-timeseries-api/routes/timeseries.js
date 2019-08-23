@@ -1,6 +1,7 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var router = express.Router();
+var moment = require('moment');
 const Event = require('../models/event');
 
 router.get('/', async (req, res, next) => {
@@ -76,6 +77,7 @@ router.get('/company/:company/timeseries', async (req, res, next) => {
         dbresult.forEach(event => {
             locations.push(event["location"]);
             areas.push(event["area"]);
+            event["data"]["timestamp"] = event["timestamp"];
         });
 
         //Get Distinct locations & areas
