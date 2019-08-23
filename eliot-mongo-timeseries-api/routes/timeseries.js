@@ -57,7 +57,7 @@ router.get('/company/:company/timeseries', async (req, res, next) => {
     const _company = req.params.company;
     let dbresult = await Event.find({
         company: _company
-    }).limit(1440) //limit to 1440 ;
+    }).sort( { timestamp : -1 }).limit(1440); //limit to 1440 ;
 
     let result;
     let locations = [];
@@ -105,6 +105,7 @@ router.get('/company/:company/timeseries', async (req, res, next) => {
             })
             objKeys = Object.keys(uniqueAreaData);
             uniqueLocationData[location].push(uniqueAreaData);
+            uniqueAreaData = {};
         });
 
         result = JSON.stringify(uniqueLocationData);
