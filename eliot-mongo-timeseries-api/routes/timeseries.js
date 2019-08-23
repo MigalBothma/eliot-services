@@ -58,7 +58,7 @@ router.get('/company/:company/timeseries', async (req, res, next) => {
     const _company = req.params.company;
     let dbresult = await Event.find({
         company: _company
-    }).sort( { timestamp : -1 }).limit(1440); //limit to 1440 ;
+    }).limit(1440).sort( { timestamp : 1 }); //limit to 1440 ;
 
     let result;
     let locations = [];
