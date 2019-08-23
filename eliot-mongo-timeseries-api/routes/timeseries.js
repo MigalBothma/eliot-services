@@ -55,17 +55,17 @@ router.get('/company/:company/location/:location/area/:area', async (req, res, n
 
 router.get('/company/:company/timeseries', async (req, res, next) => {
     const _company = req.params.company;
-    const dbresult = await Event.find({
+    let dbresult = await Event.find({
         company: _company
-    });
+    }).limit(1440) //limit to 1440 ;
 
-    var result = {};
-    var locations = [];
-    var areas = [];
-    var uniqueLocations;
-    var uniqueAreas;
-    var uniqueLocationData = {};
-    var uniqueAreaData = {};
+    let result;
+    let locations = [];
+    let areas = [];
+    let uniqueLocations;
+    let uniqueAreas;
+    let uniqueLocationData = {};
+    let uniqueAreaData = {};
 
     //limit to 1440 results @ 1 min = 1 day p/device
     if (dbresult.length > 0) {
@@ -86,19 +86,30 @@ router.get('/company/:company/timeseries', async (req, res, next) => {
             if (uniqueLocationData[location] == undefined) { uniqueLocationData[location] = []; }
             dbresult.forEach(event => {
                 if (location == event["location"]) {
-                    uniqueAreas.forEach( area => {
-                        if( area == event["area"] && location == event["location"]){
-                            if (uniqueAreaData[area] == undefined) { uniqueAreaData[area] = []; }
-                            areaID = area;
-                            uniqueAreaData[area].push({ data: event["data"] })
+
+                    uniqueAreas.forEach(area => {
+                        if (area == event["area"] && location == event["location"]) {
+                            //get event data keys
+                            dataKeys = Object.keys(event["data"]);
+
+                            if (uniqueAreaData[area] == undefined) { uniqueAreaData[area] = new Object(); }
+
+                            dataKeys.forEach(key => {
+                                if (uniqueAreaData[area][key] == undefined) { uniqueAreaData[area][key] = []; }
+
+                                uniqueAreaData[area][key].push(event["data"][key]);
+                            });
                         }
-                    });   
-                }      
+                    });
+                }
             })
-            uniqueLocationData[location].push( uniqueAreaData );   
-            uniqueAreaData = {};
+            objKeys = Object.keys(uniqueAreaData);
+            uniqueLocationData[location].push(uniqueAreaData);
         });
-        res.send(uniqueLocationData);
+
+        result = JSON.stringify(uniqueLocationData);
+
+        res.send(result);
     }
     else {
         res.send.status(200, "No Data Found for company.")
