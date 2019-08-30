@@ -1,0 +1,64 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0",
+      "title": "ELIoT API V1",
+      "contact": {
+        "name": "Migal - 082 901 5892"
+      },
+      "license": {
+        "name": "MIT"
+      }
+    },
+    "host": "http://34.90.188.17:3000",
+    "basePath": "/",
+    "schemes": [
+      "http"
+    ],
+    "consumes": [
+      "application/json"
+    ],
+    "produces": [
+      "application/json"
+    ],
+    "paths": {
+      "/timeseries": {
+        "get": {
+          "description": "Returns a list of functions for Timeseries API.",
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "A list of Functions.",
+              "schema": {
+                "type": "object",
+                "items": {
+                  "$ref": "#/definitions/List"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+      "List": {
+        "type": "object",
+        "required": [
+        ],
+        "properties": {
+          "id": {
+            "type": "JSON",
+            "format": "JSON"
+          },
+          "name": {
+            "type": "string"
+          },
+          "tag": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }

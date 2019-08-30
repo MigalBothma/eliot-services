@@ -57,10 +57,10 @@ router.get('/company/:company/location/:location/area/:area', async (req, res, n
 router.get('/company/:company/timeseries', async (req, res, next) => {
     const _company = req.params.company;
     let dbresult = await Event.aggregate([
-        {$match : { company: _company }},
-        {$sort:{timestamp:-1}},
-        {$limit:1440},
-        {$sort:{timestamp:1}}
+        { $match: { company: _company } },
+        { $sort: { timestamp: -1 } },
+        { $limit: 2880 },
+        { $sort: { timestamp: 1 } }
     ])
 
     let result;
@@ -73,17 +73,13 @@ router.get('/company/:company/timeseries', async (req, res, next) => {
 
     //limit to 1440 results @ 1 min = 1 day p/device
     if (dbresult.length > 0) {
-        if (dbresult.length > 1440) {
-            dbresult = dbresult.slice(0, 1399);
-        }
-
         dbresult.forEach(event => {
             locations.push(event["location"]);
             areas.push(event["area"]);
             event["data"]["timestamp"] = event["timestamp"];
         });
 
-        dbresult.sort( (x, y) => { return x.timestamp - y.timestamp; });
+        dbresult.sort((x, y) => { return x.timestamp - y.timestamp; });
 
         //Get Distinct locations & areas
         uniqueLocations = Array.from(new Set(locations));
@@ -122,7 +118,109 @@ router.get('/company/:company/timeseries', async (req, res, next) => {
     else {
         res.send.status(200, "No Data Found for company.")
     }
-})
+});
+
+router.get('/v1/:company/:location', async (req, res, next) => {
+    const _company = req.params.company;
+    const _location = req.params.location;
+    let dbresult = await Event.aggregate([
+        { $match: { company: _company, location: _location } },
+        { $sort: { timestamp: -1 } },
+        { $limit: 1440 },
+        { $sort: { timestamp: 1 } }
+    ])
+
+    let result;
+    let areas = [];
+    let uniqueAreas;
+    let uniqueLocationData = {};
+    let uniqueAreaData = {};
+
+    //limit to 1440 results @ 1 min = 1 day p/device
+    if (dbresult.length > 0) {
+
+        dbresult.forEach(event => {
+            areas.push(event["area"]);
+            event["data"]["timestamp"] = event["timestamp"];
+        });
+
+        //Get Distinct locations & areas
+        uniqueAreas = Array.from(new Set(areas));
+
+        dbresult.forEach(event => {
+            if (location == event["location"]) {
+
+                uniqueAreas.forEach(area => {
+                    if (area == event["area"] && location == event["location"]) {
+                        //get event data keys
+                        dataKeys = Object.keys(event["data"]);
+
+                        if (uniqueAreaData[area] == undefined) { uniqueAreaData[area] = new Object(); }
+
+                        dataKeys.forEach(key => {
+                            if (uniqueAreaData[area][key] == undefined) { uniqueAreaData[area][key] = []; }
+
+                            uniqueAreaData[area][key].push(event["data"][key]);
+                        });
+                    }
+                });
+            }
+
+            objKeys = Object.keys(uniqueAreaData);
+            uniqueLocationData[location].push(uniqueAreaData);
+            uniqueAreaData = {};
+        });
+
+        result = uniqueLocationData;
+
+        res.send(result);
+    }
+    else {
+        res.send.status(200, "No Data Found for company.")
+    }
+});
+
+router.get('/v1/:company/:location/:area', async (req, res, next) => {
+    const _company = req.params.company;
+    const _location = req.params.location;
+    const _area = req.params.area;
+    let dbresult = await Event.aggregate([
+        { $match: { company: _company, location: _location, area: _area } },
+        { $sort: { timestamp: -1 } },
+        { $limit: 1440 },
+        { $sort: { timestamp: 1 } }
+    ])
+
+    let result;
+    let uniqueAreaData = {};
+
+    //limit to 1440 results @ 1 min = 1 day p/device
+    if (dbresult.length > 0) {
+
+        dbresult.forEach(event => {
+            event["data"]["timestamp"] = event["timestamp"];
+        });
+
+        dbresult.forEach(event => {
+            dataKeys = Object.keys(event["data"]);
+
+            if (uniqueAreaData[_area] == undefined) { uniqueAreaData[_area] = new Object(); }
+
+            dataKeys.forEach(key => {
+                if (uniqueAreaData[_area][key] == undefined) { uniqueAreaData[_area][key] = []; }
+
+                uniqueAreaData[_area][key].push(event["data"][key]);
+            });
+        });
+
+        result = uniqueAreaData;
+
+        res.send(result);
+    }
+    else {
+        res.send.status(200, "No Data Found for company.")
+    }
+});
 
 router.post('/event', async (req, res, next) => {
     const event = new Event({
