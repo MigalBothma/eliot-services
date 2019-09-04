@@ -2,12 +2,18 @@
 const express = require('express');
 const cors = require('cors');
 var bodyParser = require("body-parser");
+const fs = require("fs");
+const cron = require("node-cron");
 
 //Mongoose
 const mongoose = require('mongoose');
 
+//Scheduler
+const scheduler = require('./scheduler/context-scheduler');
+
 //Routes
 const timeseries = require('./routes/timeseries');
+const context = require('./routes/context');
 
 //Swagger Docs
 const swaggerUi = require('swagger-ui-express');
@@ -28,9 +34,14 @@ finally{
 
 const app = express();
 
+cron.schedule("* * * * *", function () {
+    scheduler.startContextScheduler();
+});
+
 app.use(bodyParser.json());
 app.use(cors());
 app.use('/timeseries', timeseries);
+app.use('/context', context)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 module.exports = app;
