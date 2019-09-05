@@ -92,7 +92,7 @@ module.exports = {
                 else{
                     Context.findByIdAndUpdate(
                         { _id : dbResult.id },
-                        { $set : { locations : contextdata[_company] }, $set : {dateModified : Date.now()} },
+                        { locations : contextdata[_company], dateModified : Date.now() },
                         { new : true },
                         (err, doc) => { 
                             if(err){ console.log("context error : " + err) } 
