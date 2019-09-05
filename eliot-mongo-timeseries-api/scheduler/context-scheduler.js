@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 
 module.exports = {
     startContextScheduler: async function () {
-        console.log("cron scheduler running - " + Date.now.toString())
+        console.log("cron scheduler running - " + Date.now)
 
         let dbresult = await Event.find()
 
@@ -79,6 +79,28 @@ module.exports = {
 
                 context
                     .save();
+            }
+            else{
+                //Check the context model
+                let locations = dbResult.locations;
+                const locationsObject = Array.from(locations.entries()).reduce((main, [key, value]) => ({...main, [key]: value}), {})
+
+                if(JSON.stringify(locationsObject) === JSON.stringify(contextdata[_company]))
+                {
+                    
+                }
+                else{
+                    Context.findByIdAndUpdate(
+                        { _id : dbResult.id },
+                        { $set : { locations : contextdata[_company] }, $set : {dateModified : Date.now()} },
+                        { new : true },
+                        (err, doc) => { 
+                            if(err){ console.log("context error : " + err) } 
+                            console.log(doc);
+                        }
+                    )
+                    console.log( _company + " context updated.");
+                }
             }
         });
     }
