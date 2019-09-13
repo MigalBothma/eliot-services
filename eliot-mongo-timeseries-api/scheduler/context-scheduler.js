@@ -7,7 +7,7 @@ module.exports = {
     startContextScheduler: async function () {
         console.log("cron scheduler running - " + Date.now)
 
-        let dbresult = await Event.find()
+        let dbresult = await Event.find().limit(5000)
 
         //Get highest level of context
         let companies = [];
