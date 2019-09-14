@@ -30,8 +30,10 @@ function insertEvent(topic, message) {
 	var _location = _topicdata[1];
 	var _area = _topicdata[2];
 
+	console.log(moment(message["timestamp"]).toISOString());
+
 	messageObject = {
-		timestamp: moment().toISOString(),
+		timestamp: moment(message["timestamp"]).toISOString(),
 		company: _company,
 		location: _location,
 		area: _area,
