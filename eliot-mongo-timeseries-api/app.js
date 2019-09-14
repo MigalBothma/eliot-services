@@ -34,7 +34,7 @@ finally{
 
 const app = express();
 
-cron.schedule("*/15 * * * *", function () {
+cron.schedule("* * * * *", function () {
     scheduler.startContextScheduler();
 });
 
