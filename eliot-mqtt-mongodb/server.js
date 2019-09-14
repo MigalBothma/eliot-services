@@ -34,6 +34,7 @@ function insertEvent(topic, message) {
 
 	messageObject = {
 		timestamp: moment(message["timestamp"]).toISOString(),
+		inserted: moment().toISOString(),
 		company: _company,
 		location: _location,
 		area: _area,
