@@ -33,7 +33,7 @@ function insertEvent(topic, message) {
 	console.log(moment(message["timestamp"]).toISOString());
 
 	messageObject = {
-		timestamp: moment(message["data"]["timestamp"]).toISOString(),
+		timestamp: moment(message["timestamp"], moment.ISO_8601),
 		inserted: moment().toISOString(),
 		company: _company,
 		location: _location,
