@@ -5,7 +5,7 @@
     "license": "MIT",
     "version": "1.0.0",
     "dependencies": {
-        "moment": "^2.24.0",
+        "moment": "^2.29.2",
         "mongodb": "2.0.28",
         "mqtt": "1.1.3"
     },
